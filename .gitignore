@@ -1,0 +1,6 @@
+.vscode/
+.cache/
+build/
+sqlite-3530200/
+.clang-format
+.clang-tidy
