@@ -9,7 +9,7 @@ int main ([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     {
         loadTZDB();  // Загрузка БД временных зон до изменения локали.
 
-        Settings::setTimeZone("Etc/UTC");
+        Settings::setTimeZone("Asia/Krasnoyarsk");
         Settings::setLocate("ru_RU.utf8");
         Settings::setDbFileName("timer.db");
 
