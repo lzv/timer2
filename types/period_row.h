@@ -21,4 +21,13 @@ struct PeriodRow
     // Возвращение начальных и конечных точек периода.
     [[nodiscard]] long long int getFirstTimePoint () const;
     [[nodiscard]] long long int getLastTimePoint () const;
+
+    // Возвращает true, если период хотя бы на секунду в указанно диапазоне.
+    // Если период активен, он считается завершенным в текущий момент.
+    [[nodiscard]] bool isInsideRange (long long int begin, long long int end) const;
+
+    // Обрезка периода по указанным границам.
+    // Если текущий момент находится после end, активный период завершается.
+    // Если период не входит внутрь диапазона, поведение не определено.
+    void crop (long long int begin, long long int end);
 };

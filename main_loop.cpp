@@ -70,6 +70,7 @@ void MainLoop::start ()
             {
                 command->execute(repository);
             }
+            std::cout << "\n";
         }
         catch (const ExceptionWithMessage &exp)
         {

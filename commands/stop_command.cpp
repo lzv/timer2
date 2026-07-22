@@ -41,7 +41,7 @@ void StopCommand::execute (const SQLiteRepository &repository)
         throw CommandError{"Ошибка при остановке задачи: задача не найдена, либо у задачи нет активных периодов"};
     }
 
-    auto cur_timestamp = getCurrentTimestamp();
+    auto cur_timestamp = getCurrentSysTimestamp();
 
     for (auto &period : periods)
     {

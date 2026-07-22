@@ -20,6 +20,10 @@ class TasksVec : public std::vector<Task>
     // Возвращает самое позднее окончание работы среди всех задач и их подзадач,
     // либо текущий момент, если работа продолжается.
     [[nodiscard]] long long int getLastTimePoint () const;
+
+    // Обрезает все периоды всех задач по указанному диапазону.
+    // Если у задачи и ее подзадач не осталось периодов, задача удаляется.
+    void crop (long long int begin, long long int end);
 };
 
 class Task

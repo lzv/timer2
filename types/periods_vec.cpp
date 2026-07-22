@@ -1,11 +1,7 @@
 #include "periods_vec.h"
-#include "period_row.h"
 #include <numeric>
 #include <algorithm>
 #include <limits>
-
-// Определение деструктора в точке, где PeriodRow - завершенный тип.
-PeriodsVec::~PeriodsVec () = default;
 
 long long int PeriodsVec::length_of_all () const
 {
@@ -40,5 +36,21 @@ long long int PeriodsVec::getLastTimePoint () const
         this->end(),
         std::numeric_limits<long long int>::min(),
         [] (long long int acc, const PeriodRow &row) -> long long int { return std::max(acc, row.getLastTimePoint()); }
+    );
+}
+
+void PeriodsVec::crop (long long int begin, long long int end)
+{
+    std::erase_if(
+        *this,
+        [begin, end] (PeriodRow &row) -> bool
+        {
+            if (row.isInsideRange(begin, end))
+            {
+                row.crop(begin, end);
+                return false;
+            }
+            return true;
+        }
     );
 }

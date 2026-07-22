@@ -33,6 +33,20 @@ long long int TasksVec::getLastTimePoint () const
     );
 }
 
+void TasksVec::crop (long long int begin, long long int end)
+{
+    std::erase_if(
+        *this,
+        [begin, end] (Task &task) -> bool
+        {
+            task.periods.crop(begin, end);
+            task.sub_tasks.crop(begin, end);
+
+            return task.periods.empty() && task.sub_tasks.empty();
+        }
+    );
+}
+
 bool Task::is_active () const
 {
     if (this->periods.is_active())

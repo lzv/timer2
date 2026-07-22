@@ -10,10 +10,10 @@ long long int PeriodRow::length () const
     }
 
     // В ином случае возвращается продолжительность до текущего момента.
-    return getCurrentTimestamp() - this->start;
+    return getCurrentSysTimestamp() - this->start;
 }
 
-[[nodiscard]] bool PeriodRow::is_active () const
+bool PeriodRow::is_active () const
 {
     // Если указан конец периода, он не активный в текущий момент.
     return !this->end;
@@ -26,5 +26,23 @@ long long int PeriodRow::getFirstTimePoint () const
 
 long long int PeriodRow::getLastTimePoint () const
 {
-    return this->end ? this->end.value() : getCurrentTimestamp();
+    return this->end ? this->end.value() : getCurrentSysTimestamp();
+}
+
+bool PeriodRow::isInsideRange (long long int begin, long long int end) const
+{
+    return this->getLastTimePoint() > begin && this->getFirstTimePoint() < end;
+}
+
+void PeriodRow::crop (long long int begin, long long int end)
+{
+    if (this->getFirstTimePoint() < begin)
+    {
+        this->start = begin;
+    }
+
+    if (this->getLastTimePoint() > end)
+    {
+        this->end = end;
+    }
 }

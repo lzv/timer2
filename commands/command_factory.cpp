@@ -8,6 +8,7 @@
 #include "stop_command.h"
 #include "hide_command.h"
 #include "show_command.h"
+#include "stat_command.h"
 
 //------------------------- Локальный код ----------------------------------
 
@@ -23,7 +24,7 @@ namespace
         }
     }
 
-    inline void check_id (const std::string &id, const char *err_message)
+    inline void check_numbers_only (const std::string &id, const char *err_message)
     {
         if (id.empty() || id.find_first_not_of("0123456789") != std::string::npos)
         {
@@ -53,7 +54,11 @@ namespace
         "Команда \"старт ID\" запустит задачу с указанным ID.\n"
         "Команда \"стоп ID\" остановит задачу с указанным ID. Если не указать ID, будут остановлены все задачи.\n"
         "Команда \"скрыть ID\" скроет задачу из списка всех задач (статистика не будет затронута).\n"
-        "Команда \"показать ID\" отменит скрытие указанной задачи.";
+        "Команда \"показать ID\" отменит скрытие указанной задачи.\n"
+        "Команда \"стат T S\" покажет статистику по всем делам за время T со сдвигом в прошлое S. "
+        "T может быть \"день\", \"неделя\" или \"месяц\", статистика показывается за весь указанный период. "
+        "S - число от 0. При 0 будет показан текущий день/неделя/месяц, при 1 - предыдущий период, и т.д. "
+        "Значение по умолчанию для T это \"день\", для S это 0. Если указан S, нужно обязательно указать T.";
     // clang-format on
 
 }  // namespace
@@ -63,6 +68,7 @@ namespace
 // Фабричная функция инкапсулирует обработку входных текстовых команд и связывает их с классами.
 // Конкретные классы команд знают только свои функции.
 
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
 std::unique_ptr<CommandBase> getCommand (const std::vector<std::string> &words)
 {
     check_vector_size(words, 1, "Ошибка: команда не указана");
@@ -79,7 +85,7 @@ std::unique_ptr<CommandBase> getCommand (const std::vector<std::string> &words)
         if (words[1] == "задачу")
         {
             check_vector_size(words, 4, "Ошибка: недостаточно параметров команды");
-            check_id(words[2], "Ошибка: некорректный id родительской задачи");
+            check_numbers_only(words[2], "Ошибка: некорректный id родительской задачи");
 
             return std::make_unique<AddTaskCommand>(std::stoll(words[2]), merge_words(words, 3));
         }
@@ -108,7 +114,7 @@ std::unique_ptr<CommandBase> getCommand (const std::vector<std::string> &words)
     if (words[0] == "старт")
     {
         check_vector_size(words, 2, "Ошибка: недостаточно параметров команды");
-        check_id(words[1], "Ошибка: некорректный id задачи");
+        check_numbers_only(words[1], "Ошибка: некорректный id задачи");
 
         return std::make_unique<StartCommand>(std::stoll(words[1]));
     }
@@ -117,7 +123,7 @@ std::unique_ptr<CommandBase> getCommand (const std::vector<std::string> &words)
     {
         if (words.size() > 1)
         {
-            check_id(words[1], "Ошибка: некорректный id задачи");
+            check_numbers_only(words[1], "Ошибка: некорректный id задачи");
 
             return std::make_unique<StopCommand>(std::stoll(words[1]));
         }
@@ -128,7 +134,7 @@ std::unique_ptr<CommandBase> getCommand (const std::vector<std::string> &words)
     if (words[0] == "скрыть")
     {
         check_vector_size(words, 2, "Ошибка: недостаточно параметров команды");
-        check_id(words[1], "Ошибка: некорректный id задачи");
+        check_numbers_only(words[1], "Ошибка: некорректный id задачи");
 
         return std::make_unique<HideCommand>(std::stoll(words[1]));
     }
@@ -136,9 +142,48 @@ std::unique_ptr<CommandBase> getCommand (const std::vector<std::string> &words)
     if (words[0] == "показать")
     {
         check_vector_size(words, 2, "Ошибка: недостаточно параметров команды");
-        check_id(words[1], "Ошибка: некорректный id задачи");
+        check_numbers_only(words[1], "Ошибка: некорректный id задачи");
 
         return std::make_unique<ShowCommand>(std::stoll(words[1]));
+    }
+
+    if (words[0] == "стат")
+    {
+        if (words.size() == 1)
+        {
+            return std::make_unique<StatCommand>();
+        }
+
+        auto get_time_entity = [] (const std::string &word) -> StatCommand::TimeEntity
+        {
+            if (word == "день")
+            {
+                return StatCommand::TimeEntity::DAY;
+            }
+            if (word == "неделя")
+            {
+                return StatCommand::TimeEntity::WEEK;
+            }
+            if (word == "месяц")
+            {
+                return StatCommand::TimeEntity::MONTH;
+            }
+            throw CommandError{"Ошибка: некорректный параметр команды"};
+        };
+
+        if (words.size() == 2)
+        {
+            return std::make_unique<StatCommand>(get_time_entity(words[1]));
+        }
+
+        if (words.size() == 3)
+        {
+            check_numbers_only(words[2], "Ошибка: некорректный параметр команды");
+
+            return std::make_unique<StatCommand>(get_time_entity(words[1]), std::stoi(words[2]));
+        }
+
+        throw CommandError{"Ошибка: слишком много параметров команды"};
     }
 
     if (words[0] == "помощь")

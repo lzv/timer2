@@ -404,7 +404,7 @@ Task SQLiteRepository::getFullTask (long long int id, TaskVisibility visible) co
 long long int SQLiteRepository::stopAllTasks () const
 {
     connection_ptr->runWriteSql(
-        std::format(R"(UPDATE "periods" SET "end" = {} WHERE "end" IS NULL;)", getCurrentTimestamp()), false
+        std::format(R"(UPDATE "periods" SET "end" = {} WHERE "end" IS NULL;)", getCurrentSysTimestamp()), false
     );
 
     return connection_ptr->affectedRowsCount();
