@@ -28,7 +28,7 @@ namespace
             }
 
             std::cout << std::format(
-                "{}({}{}{}) {} ({}, {}добавлено {:%d.%m.%Y %T})\n",
+                "{}[{}{}{}] {} ({}, {}добавлено {:%d.%m.%Y %T})\n",
                 prefix,
                 task.data.id,
                 task.data.is_hidden ? ",H" : "",

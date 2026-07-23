@@ -22,17 +22,22 @@ namespace
         return TimeEntity::DAY;
     }
 
-    void print_tasks (const TasksVec &tasks, const std::string &prefix)
+    long long int print_tasks (const TasksVec &tasks, const std::string &prefix)
     {
+        long long int sum = 0;
+
         for (const auto &task : tasks)
         {
+            auto task_length = task.getFullLength();
+            sum += task_length;
+
             std::cout << std::format(
-                "{}({}{}{}, {}) {}\n",
+                "{}[{}{}{}] ({}) {}\n",
                 prefix,
                 task.data.id,
                 task.data.is_hidden ? ",H" : "",
                 task.is_active() ? ",*" : "",
-                getTimeLength(task.getFullLength()),
+                getTimeLength(task_length),
                 task.data.name
             );
 
@@ -41,6 +46,8 @@ namespace
                 print_tasks(task.sub_tasks, prefix + "    ");
             }
         }
+
+        return sum;
     }
 
 }  // namespace
@@ -69,10 +76,12 @@ void StatCommand::execute (const SQLiteRepository &repository)
 
     if (tasks.empty())
     {
-        std::cout << "Для указанного периода задачи не найдены\n\n";
+        std::cout << "Для указанного периода задачи не найдены\n";
     }
     else
     {
-        print_tasks(tasks, "");
+        auto tasks_length = print_tasks(tasks, "");
+
+        std::cout << std::format("\nСуммарное время: {}\n", getTimeLength(tasks_length));
     }
 }
