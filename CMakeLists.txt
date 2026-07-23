@@ -27,6 +27,6 @@ add_executable(target_main
     commands/command_base.cpp commands/command_factory.cpp commands/exit_command.cpp commands/add_task_command.cpp
     commands/help_command.cpp types/periods_vec.cpp types/period_row.cpp types/task.cpp commands/list_tasks_command.cpp
     commands/start_command.cpp commands/stop_command.cpp utils.cpp commands/hide_command.cpp commands/show_command.cpp
-    commands/stat_command.cpp
+    commands/stat_command.cpp commands/list_active_command.cpp
     db/sqlite3.c
 )

@@ -47,9 +47,14 @@ void TasksVec::crop (long long int begin, long long int end)
     );
 }
 
+bool Task::is_active_self () const
+{
+    return this->periods.is_active();
+}
+
 bool Task::is_active () const
 {
-    if (this->periods.is_active())
+    if (this->is_active_self())
     {
         return true;
     }

@@ -32,11 +32,12 @@ namespace
             sum += task_length;
 
             std::cout << std::format(
-                "{}[{}{}{}] ({}) {}\n",
+                "{}[{}{}{}{}] ({}) {}\n",
                 prefix,
                 task.data.id,
                 task.data.is_hidden ? ",H" : "",
                 task.is_active() ? ",*" : "",
+                task.is_active_self() ? "*" : "",
                 getTimeLength(task_length),
                 task.data.name
             );

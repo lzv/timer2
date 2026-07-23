@@ -36,6 +36,9 @@ class Task
     // Задача активна, если у нее или ее подзадач есть активный период.
     [[nodiscard]] bool is_active () const;
 
+    // Возвращает true, если активна сама задача, без учета подзадач, иначе возвращает false.
+    [[nodiscard]] bool is_active_self () const;
+
     // Суммарная продолжительность работы над задачей и всеми подзадачами.
     [[nodiscard]] long long int getFullLength () const;
 

@@ -28,11 +28,12 @@ namespace
             }
 
             std::cout << std::format(
-                "{}[{}{}{}] {} ({}, {}добавлено {:%d.%m.%Y %T})\n",
+                "{}[{}{}{}{}] {} ({}, {}добавлено {:%d.%m.%Y %T})\n",
                 prefix,
                 task.data.id,
                 task.data.is_hidden ? ",H" : "",
                 task.is_active() ? ",*" : "",
+                task.is_active_self() ? "*" : "",
                 task.data.name,
                 getTimeLength(task_full_length),
                 from_to,
