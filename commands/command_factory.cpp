@@ -3,6 +3,8 @@
 #include "list_active_command.h"
 #include "exit_command.h"
 #include "add_task_command.h"
+#include "rename_task_command.h"
+#include "delete_task_command.h"
 #include "help_command.h"
 #include "list_tasks_command.h"
 #include "start_command.h"
@@ -47,8 +49,10 @@ namespace
 
     // clang-format off
     constexpr const char *help_string =
-        "Для добавления задачи наберите \"добавить задачу PID Название задачи\", где PID - ID родительской задачи. "
-            "Если добавляемая задача должна быть высшей в иерархии, укажите 0.\n"
+        "Команда \"добавить задачу PID Название задачи\" добавит новую задачу. PID - ID родительской задачи."
+            "Если добавляемая задача должна быть высшей в иерархии, в качестве PID укажите 0.\n"
+        "Команда \"переименовать ID Новое название задачи\" поменяет название указанной задачи.\n"
+        "Команда \"удалить ID\" удалит указанную задачу, если такая существует.\n"
         "Команда \"задачи\" выведет иерархический список видимых задач. "
             "Если добавить \"все\", будут выведены также скрытые задачи.\n"
         "Команда \"старт ID\" запустит задачу с указанным ID.\n"
@@ -94,6 +98,22 @@ std::unique_ptr<CommandBase> getCommand (const std::vector<std::string> &words)
 
             return std::make_unique<AddTaskCommand>(std::stoll(words[2]), merge_words(words, 3));
         }
+    }
+
+    if (words[0] == "переименовать")
+    {
+        check_vector_size(words, 3, "Ошибка: недостаточно параметров команды");
+        check_numbers_only(words[1], "Ошибка: некорректный id задачи");
+
+        return std::make_unique<RenameTaskCommand>(std::stoll(words[1]), merge_words(words, 2));
+    }
+
+    if (words[0] == "удалить")
+    {
+        check_vector_size(words, 2, "Ошибка: недостаточно параметров команды");
+        check_numbers_only(words[1], "Ошибка: некорректный id задачи");
+
+        return std::make_unique<DeleteTaskCommand>(std::stoll(words[1]));
     }
 
     if (words[0] == "задачи")

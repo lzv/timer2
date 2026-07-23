@@ -2,36 +2,7 @@
 #include "../exceptions.h"
 #include "../types/task_row.h"
 #include "../db/repository.h"
-
-//------------------------- Локальный код ----------------------------------
-
-namespace
-{
-    // Удаление пробелов у строки в начале и в конце.
-
-    void trim (std::string &s)
-    {
-        const char *spaces = " \t\n\r";
-
-        // Поиск пробелов в конце строки.
-        auto pos = s.find_last_not_of(spaces);
-
-        // Если true, строка состоит из пробелов либо пуста.
-        if (pos == std::string::npos)
-        {
-            s.clear();
-            return;
-        }
-
-        s.erase(pos + 1);
-
-        // Т.к. уже проверено, что в стоке есть символы кроме пробелов, повторно проверять на npos не нужно.
-        s.erase(0, s.find_first_not_of(spaces));
-    }
-
-}  // namespace
-
-//------------------------- end Локальный код -------------------------------
+#include "../utils.h"
 
 AddTaskCommand::AddTaskCommand (long long int parent_id, std::string name) : parent_id{parent_id}, name{std::move(name)}
 {

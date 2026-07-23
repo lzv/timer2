@@ -81,3 +81,23 @@ std::optional<std::pair<long long int, long long int> > getPeriodBoundaries (Tim
 
     return {};
 }
+
+void trim (std::string &s)
+{
+    const char *spaces = " \t\n\r";
+
+    // Поиск пробелов в конце строки.
+    auto pos = s.find_last_not_of(spaces);
+
+    // Если true, строка состоит из пробелов либо пуста.
+    if (pos == std::string::npos)
+    {
+        s.clear();
+        return;
+    }
+
+    s.erase(pos + 1);
+
+    // Т.к. уже проверено, что в стоке есть символы кроме пробелов, повторно проверять на npos не нужно.
+    s.erase(0, s.find_first_not_of(spaces));
+}

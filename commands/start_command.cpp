@@ -4,15 +4,16 @@
 #include "../db/repository.h"
 #include <iostream>
 
-StartCommand::StartCommand (long long int task_id) : task_id{task_id} {}
-
-void StartCommand::execute (const SQLiteRepository &repository)
+StartCommand::StartCommand (long long int task_id) : task_id{task_id}
 {
     if (this->task_id <= 0)
     {
-        throw CommandError{"Ошибка при старте задачи: id задачи меньше либо равен 0"};
+        throw CommandError{"Ошибка: id задачи меньше либо равен 0"};
     }
+}
 
+void StartCommand::execute (const SQLiteRepository &repository)
+{
     const PeriodsVec periods = repository.getPeriods(this->task_id);
 
     if (periods.is_active())

@@ -16,3 +16,6 @@ enum class TimeEntity : unsigned char { DAY, WEEK, MONTH };
 // shift - сдвиг в прошлое. Если отрицательное, будет возвращен будущий период.
 // Возвращает пустой std::optional{}, если entity не соответствует какому-либо перечислителю.
 std::optional<std::pair<long long int, long long int>> getPeriodBoundaries (TimeEntity entity, int shift);
+
+// Удаление пробелов у строки в начале и в конце.
+void trim (std::string &s);
