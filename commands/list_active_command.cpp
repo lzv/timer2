@@ -3,6 +3,7 @@
 #include <string>
 #include <format>
 #include "../db/repository.h"
+#include "../utils.h"
 
 namespace
 {
@@ -11,12 +12,13 @@ namespace
         for (const auto &task : tasks)
         {
             std::cout << std::format(
-                "{}[{}{}{}{}] {}\n",
+                "{}[{}{}{}{}] ({}) {}\n",
                 prefix,
                 task.data.id,
                 task.data.is_hidden ? ",H" : "",
                 task.is_active() ? ",*" : "",
                 task.is_active_self() ? "*" : "",
+                getTimeLength(task.getFullLength()),
                 task.data.name
             );
 
